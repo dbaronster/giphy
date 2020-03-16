@@ -1,11 +1,11 @@
-# Sample App based on java-getting-started
+# Giphy Picker based on java-getting-started
 
-A barebones Java app, which can easily be deployed to Heroku.
+A simple Java app, which can easily be deployed to Heroku.
 
 This application supports the [Getting Started with Java on Heroku](https://devcenter.heroku.com/articles/getting-started-with-java) article - check it out.
 
 
-## Running on Heroku
+## It's Running on Heroku
 
 The app is running on [https://shrouded-hollows-81863.herokuapp.com/](https://shrouded-hollows-81863.herokuapp.com/).
 
