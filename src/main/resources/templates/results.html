@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" th:replace="~{fragments/layout :: layout (~{::body},'giphy')}">
+
+<body>
+
+<div class="jumbotron text-center">
+  <div class="container">
+    <a href="/" class="lang-logo">
+      <img src="/lang-logo.png">
+    </a>
+    <h1>Favorites</h1>
+    <a type="button" class="btn btn-lg btn-default" href="https://developers.giphy.com/dashboard/"><span class="glyphicon glyphicon-flash"></span> View Giphy Dashboard</a>
+    <a type="button" class="btn btn-lg btn-primary" href="https://github.com/dbaronster/heb"><span class="glyphicon glyphicon-download"></span> Source on GitHub</a>
+</div>
+</div>
+<div class="container">
+  <h1>Giphy Search Results</h1>
+  <div th:each="url : ${results}">
+  	<img th:src=${url}></img>
+  		  <div class="container">
+	
+		<h1>Pick ${url}</h1>
+	    <form action="#" th:action="@{/add}" th:object="${favorite}" method="post">
+	        <select th:field="*{category}">
+			    <option 
+			      th:each="dropdownValue: ${categoryValues}"
+			      th:value="${dropdownValue}"
+			      th:text="${dropdownValue}" >
+			    </option>
+			</select>	        
+	        <p><input type="text" th:field="*{id}" th:value="${url}" /></p>
+	        <input type="hidden" th:field="*{id}" th:value="${url}" />
+	        
+	        <p><input type="submit" value="Add Favorite" /></p>
+	    </form>
+	    
+	  </div>
+  	
+  </div>
+</div>
+
+</body>
+</html>

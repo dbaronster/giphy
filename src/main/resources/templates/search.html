@@ -1,0 +1,17 @@
+<!DOCTYPE html>
+
+<html xmlns:th="http://www.thymeleaf.org" th:replace="~{fragments/layout :: layout (~{::body},'error')}">
+
+  <body>
+	  <div class="container">
+	
+		<h1>Giphy Search</h1>
+	    <form action="#" th:action="@{/search}" th:object="${search}" method="post">
+	        <p>Search for: <input type="text" placeholder="Search for Giphy" th:field="*{text}" /></p>
+	        <p><input type="submit" value="Search" /> <input type="reset" value="Reset" /></p>
+	    </form>
+	    
+	  </div>
+  </body>
+
+</html>
