@@ -9,11 +9,15 @@
       <img src="/lang-logo.png">
     </a>
     <h1>Favorites</h1>
-    <a type="button" class="btn btn-lg btn-default" href="/search"><span class="glyphicon glyphicon-flash"></span> Giphy Search</a>
-    <a type="button" class="btn btn-lg btn-primary" href="https://github.com/dbaronster/giphy"><span class="glyphicon glyphicon-download"></span> Source on GitHub</a>
+    <a type="button" class="btn btn-lg btn-primary" href="/"><span class="glyphicon glyphicon-download"></span> Home </a>
+    <a type="button" class="btn btn-lg btn-default" href="/search"><span class="glyphicon glyphicon-flash"></span> Search </a>
 </div>
 </div>
-
+<div class="container">
+  <div th:each="fav : ${favorites}">
+  	<img th:src=${fav.url}></img>
+  </div>
+</div>
 
 </body>
 </html>

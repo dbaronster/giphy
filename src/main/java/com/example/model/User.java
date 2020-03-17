@@ -26,6 +26,7 @@ public class User {
 	private String lastName;
 	private String email;
 	private String password;
+	private String favorites;
 	
 	@ManyToMany(fetch = FetchType.EAGER, cascade = CascadeType.ALL)
 	@JoinTable(
@@ -111,6 +112,7 @@ public class User {
                 ", lastName='" + lastName + '\'' +
                 ", email='" + email + '\'' +
                 ", password='" + "*********" + '\'' +
+                ", favorites='" + favorites + '\'' +
                 ", roles=" + roles +
                 '}';
 	}

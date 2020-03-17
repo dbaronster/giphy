@@ -21,6 +21,7 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 
@@ -45,8 +46,11 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestAttribute;
 import org.springframework.web.bind.annotation.RequestMapping;
 
+import com.example.model.Favorite;
 import com.example.service.GiphyService;
+import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.JsonNode;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.jayway.jsonpath.Configuration;
 import com.jayway.jsonpath.DocumentContext;
 import com.jayway.jsonpath.JsonPath;
@@ -58,6 +62,7 @@ import com.zaxxer.hikari.HikariDataSource;
 public class Main {
 
 	private final Logger log = LoggerFactory.getLogger(this.getClass());
+	private final ObjectMapper mapper = new ObjectMapper();
 
 	@Value("${spring.datasource.url}")
 	private String dbUrl;
@@ -108,6 +113,7 @@ public class Main {
         SecurityContextHolder.getContext().setAuthentication(token);
         return "favorites";
     }
+    
 	@GetMapping("/search")
 	String searchForm(Model model) {
 		model.addAttribute("search", new GiphySearch());
@@ -118,9 +124,10 @@ public class Main {
 	String searchSubmit(@ModelAttribute GiphySearch search, Model model) {
 		System.out.println("got search:" + search.getText());
 		JsonNode searchResults = giphyService.search(search.getText());
+		@SuppressWarnings("unchecked")
 		List<String> gifUrls = (List<String>)parseJson(searchResults, "$.data[*].images.original.url");
 		model.addAttribute("results", gifUrls);
-		model.addAttribute("favorite", new GiphyFavorite());
+		model.addAttribute("favorite", new Favorite());
 		//System.out.println("giphies#:" + gifUrls);
 		search.setResults(gifUrls);
 		return "results";
@@ -128,21 +135,39 @@ public class Main {
 
 	@GetMapping("/results")
 	String searchResultsForm(Model model) {
-		model.addAttribute("favorite", new GiphyFavorite());
+		model.addAttribute("favorite", new Favorite());
 		return "results";
 	}
 
 	@PostMapping("/add")
-	String addFavorite(@ModelAttribute GiphyFavorite favorite, Model model) {
-		System.out.println("add:" + favorite.getId());
+	String addFavorite(@ModelAttribute Favorite favorite, Model model) {
+		//TODO: get the user; add this favorite to the list
+		System.out.println("add:" + favorite.getUrl());
 		//model.addAttribute("favorite", new GiphyFavorite());
-		return "favorites";
+		return "redirect:favorites";
 	}
 
 
 	@GetMapping("/favorites")
-	String favorites() {
+	String favorites(Model model) {
+		//TODO: get the user; get the favorites list
+		List<Favorite> favorites = dummyFavorites();//user.getFavorites());
+		model.addAttribute("favorites", favorites);
 		return "favorites";
+	}
+
+	private static final String DUMMY_FAVS_JSON = "[{\"url\":\"https://media0.giphy.com/media/nxG4i6YuQnHzi/giphy.gif?cid=98fb8510ce6813bdb441ef8f818e55d068c61421c8b32ea7&rid=giphy.gif\",\"category\":\"sports\"}]";
+	
+	private List<Favorite> dummyFavorites() {
+		List<Favorite> dummyFavorites = Collections.emptyList();
+		try {
+			dummyFavorites = mapper.readValue(DUMMY_FAVS_JSON, new TypeReference<List<Favorite>>(){});
+			System.out.println("deparsed JSON: "+dummyFavorites);
+		}
+		catch (Exception e) {
+			System.out.println("error deparsing JSON");
+		}
+		return dummyFavorites;
 	}
 
 	@ModelAttribute("categoryValues")
@@ -207,21 +232,4 @@ public class Main {
 		}
 	}
 
-	private static class GiphyFavorite {
-		private String id;
-		private String category;
-
-		public String getId() {
-			return id;
-		}
-		public String getCategory() {
-			return category;
-		}
-		public void setId(String id) {
-			this.id = id;
-		}
-		public void setCategory(String category) {
-			this.category = category;
-		}
-	}
 }

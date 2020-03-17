@@ -5,7 +5,7 @@
 
 <div class="jumbotron text-center">
   <div class="container">
-    <a type="button" class="btn btn-lg btn-primary" href="https://github.com/dbaronster/giphy"><span class="glyphicon glyphicon-download"></span> Source on GitHub</a>
+    <a type="button" class="btn btn-lg btn-default" href="/search"><span class="glyphicon glyphicon-flash"></span> Search </a>
 </div>
 </div>
 <div class="container">
@@ -14,7 +14,7 @@
   	<img th:src=${url}></img>
   		  <div class="container">
 	
-		<h1>Pick ${url}</h1>
+		<h3>Pick ${url}</h3>
 	    <form action="#" th:action="@{/add}" th:object="${favorite}" method="post">
 	        <select th:field="*{category}">
 			    <option 
@@ -23,10 +23,9 @@
 			      th:text="${dropdownValue}" >
 			    </option>
 			</select>	        
-	        <p><input type="text" th:field="*{id}" th:value="${url}" /></p>
-	        <input type="hidden" th:field="*{id}" th:value="${url}" />
-	        
-	        <p><input type="submit" value="Add Favorite" /></p>
+	        <input type="text" th:field="*{url}" th:value="${#url}" />
+	        <input type="hidden" th:field="*{url}" th:value="${#url}" />
+	        <input type="submit" value="Add Favorite" />
 	    </form>
 	    
 	  </div>
