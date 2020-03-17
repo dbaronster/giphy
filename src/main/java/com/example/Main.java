@@ -33,11 +33,16 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.context.annotation.Bean;
+import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestAttribute;
 import org.springframework.web.bind.annotation.RequestMapping;
 
 import com.example.service.GiphyService;
@@ -68,15 +73,41 @@ public class Main {
 	}
 
 	@RequestMapping("/")
-	String index() {
+	String root() {
 		return "index";
 	}
 
-	@RequestMapping("/login")
-	String login() {
+	@RequestMapping("/index")
+	String index() {
+		return "favorites";
+	}
+
+	@GetMapping("/login")
+	String login(Model model) {
+		System.out.println("in login");
 		return "login";
 	}
 
+
+    // Login form with error  
+    @RequestMapping("/login-error")  
+    public String loginError(Model model) {  
+        model.addAttribute("loginError", true);  
+        return "login";  
+    }  
+
+    @PostMapping(value="/loginSecure")
+    public String login(@RequestAttribute("username") String userName, @RequestAttribute("password")  String password) {
+
+		System.out.println("in loginSecure");
+
+        //does the authentication
+		UsernamePasswordAuthenticationToken token = new UsernamePasswordAuthenticationToken(
+                        userName,
+                        password);
+        SecurityContextHolder.getContext().setAuthentication(token);
+        return "favorites";
+    }
 	@GetMapping("/search")
 	String searchForm(Model model) {
 		model.addAttribute("search", new GiphySearch());

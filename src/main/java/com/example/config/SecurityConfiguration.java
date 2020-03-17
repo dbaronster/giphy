@@ -31,15 +31,19 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
 		.anyRequest().authenticated()
 		.and()
 		.formLogin()
-		.loginPage("/login")
-		.permitAll()
+			.loginPage("/login")
+            .failureUrl("/login-error")  
+            //.loginProcessingUrl("/loginSecure")
+            .defaultSuccessUrl("/index", true)
+           // .usernameParameter("username").passwordParameter("password")
+			.permitAll()
 		.and()
 		.logout()
-		.invalidateHttpSession(true)
-		.clearAuthentication(true)
-		.logoutRequestMatcher(new AntPathRequestMatcher("/logout"))
-		.logoutSuccessUrl("/login?logout")
-		.permitAll();
+			.invalidateHttpSession(true)
+			.clearAuthentication(true)
+			.logoutRequestMatcher(new AntPathRequestMatcher("/logout"))
+			.logoutSuccessUrl("/login?logout")
+			.permitAll();
 	}
 
 	@Bean
@@ -49,14 +53,24 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
 
 	@Bean
 	public DaoAuthenticationProvider authenticationProvider(){
+		System.out.println("DaoAuthenticationProvider");
 		DaoAuthenticationProvider auth = new DaoAuthenticationProvider();
 		auth.setUserDetailsService(userService);
 		auth.setPasswordEncoder(passwordEncoder());
 		return auth;
 	}
 
-	@Override
-	protected void configure(AuthenticationManagerBuilder auth) throws Exception {
-		auth.authenticationProvider(authenticationProvider());
-	}
+    @Override
+    protected void configure(AuthenticationManagerBuilder auth) throws Exception {
+		System.out.println("configure");
+        auth.inMemoryAuthentication()
+                .withUser("user").password(passwordEncoder().encode("password")).roles("USER")
+            .and()
+                .withUser("manager").password(passwordEncoder().encode("password")).roles("MANAGER");
+    }
+
+//	@Override
+//	protected void configure(AuthenticationManagerBuilder auth) throws Exception {
+//		auth.authenticationProvider(authenticationProvider());
+//	}
 }

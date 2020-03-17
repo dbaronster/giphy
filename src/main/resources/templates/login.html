@@ -2,29 +2,17 @@
 
 <html xmlns:th="http://www.thymeleaf.org" th:replace="~{fragments/layout :: layout (~{::body},'error')}">
 
-  <body>
-<form action="action_page.php" method="post">
-  <div class="imgcontainer">
-    <img src="img_avatar2.png" alt="Avatar" class="avatar">
-  </div>
-
-  <div class="container">
-    <label for="uname"><b>Email</b></label>
-    <input type="text" placeholder="Enter email address" name="uname" required>
-
-    <label for="psw"><b>Password</b></label>
-    <input type="password" placeholder="Enter Password" name="psw" required>
-
-    <button type="submit">Login</button>
-    <label>
-    </label>
-  </div>
-
-  <div class="container" style="background-color:#f1f1f1">
-    <button type="button" class="cancelbtn">Cancel</button>
-    <span class="psw">Forgot <a href="#">password?</a></span>
-  </div>
-</form>
-  </body>
-
+<body>
+<div id="container">  
+    <h2>Login page</h2>  
+    <form th:action="@{/login}" method="post">  
+        <label for="username">Username</label>  
+        <input type="text" placeholder="Enter email address" id="username" name="username" autofocus="autofocus" />  
+        <label for="password">Password</label>  
+        <input type="password" placeholder="Enter Password" id="password" name="password" />  
+        <input id="submit" type="submit" value="Log in" />  
+    </form>  
+    <p th:if="${loginError}" class="error">Wrong user or password</p>  
+</div>  
+</body>
 </html>
