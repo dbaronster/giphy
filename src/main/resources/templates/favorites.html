@@ -16,6 +16,7 @@
 <div class="container">
   <div th:each="fav : ${favorites}">
   	<img th:src=${fav.url}></img>
+  	<p th:text=${fav.category}>Category</p>
   </div>
 </div>
 

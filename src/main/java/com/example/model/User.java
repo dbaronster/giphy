@@ -96,6 +96,14 @@ public class User {
 		this.password = password;
 	}
 
+	public String getFavorites() {
+		return favorites;
+	}
+
+	public void setFavorites(String favorites) {
+		this.favorites = favorites;
+	}
+
 	public Collection<Role> getRoles() {
 		return roles;
 	}

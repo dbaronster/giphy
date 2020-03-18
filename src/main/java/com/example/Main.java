@@ -16,6 +16,7 @@
 
 package com.example;
 
+import java.security.Principal;
 import java.sql.Connection;
 import java.sql.ResultSet;
 import java.sql.SQLException;
@@ -62,7 +63,7 @@ import com.zaxxer.hikari.HikariDataSource;
 public class Main {
 
 	private final Logger log = LoggerFactory.getLogger(this.getClass());
-	private final ObjectMapper mapper = new ObjectMapper();
+	private static final ObjectMapper mapper = new ObjectMapper();
 
 	@Value("${spring.datasource.url}")
 	private String dbUrl;
@@ -89,7 +90,7 @@ public class Main {
 
 	@GetMapping("/login")
 	String login(Model model) {
-		System.out.println("in login");
+		log.debug("in login");
 		return "login";
 	}
 
@@ -104,7 +105,7 @@ public class Main {
     @PostMapping(value="/loginSecure")
     public String login(@RequestAttribute("username") String userName, @RequestAttribute("password")  String password) {
 
-		System.out.println("in loginSecure");
+		log.debug("in loginSecure");
 
         //does the authentication
 		UsernamePasswordAuthenticationToken token = new UsernamePasswordAuthenticationToken(
@@ -122,13 +123,13 @@ public class Main {
 
 	@PostMapping("/search")
 	String searchSubmit(@ModelAttribute GiphySearch search, Model model) {
-		System.out.println("got search:" + search.getText());
+		log.debug("got search:" + search.getText());
 		JsonNode searchResults = giphyService.search(search.getText());
 		@SuppressWarnings("unchecked")
 		List<String> gifUrls = (List<String>)parseJson(searchResults, "$.data[*].images.original.url");
 		model.addAttribute("results", gifUrls);
 		model.addAttribute("favorite", new Favorite());
-		//System.out.println("giphies#:" + gifUrls);
+		//log.debug("giphies#:" + gifUrls);
 		search.setResults(gifUrls);
 		return "results";
 	}
@@ -139,11 +140,24 @@ public class Main {
 		return "results";
 	}
 
+	private static final String DUMMY_FAVS_JSON = "{\"url\":\"https://media0.giphy.com/media/nxG4i6YuQnHzi/giphy.gif?cid=98fb8510ce6813bdb441ef8f818e55d068c61421c8b32ea7&rid=giphy.gif\",\"category\":\"sports\"}";
+	private static Favorite dummyFavorite;
+	static {
+		try {
+			dummyFavorite = mapper.readValue(DUMMY_FAVS_JSON, new TypeReference<Favorite>(){});
+		}
+		catch (Exception e) {
+			System.err.println("error deparsing JSON");
+		}
+
+	}
+
 	@PostMapping("/add")
-	String addFavorite(@ModelAttribute Favorite favorite, Model model) {
+	String addFavorite(@ModelAttribute Favorite favorite, Model model, Principal user) {
 		//TODO: get the user; add this favorite to the list
-		System.out.println("add:" + favorite.getUrl());
-		//model.addAttribute("favorite", new GiphyFavorite());
+		log.debug("add:" + favorite.toString());
+		log.debug("user:" + user.getName());
+		dummyFavorite = favorite;
 		return "redirect:favorites";
 	}
 
@@ -156,23 +170,15 @@ public class Main {
 		return "favorites";
 	}
 
-	private static final String DUMMY_FAVS_JSON = "[{\"url\":\"https://media0.giphy.com/media/nxG4i6YuQnHzi/giphy.gif?cid=98fb8510ce6813bdb441ef8f818e55d068c61421c8b32ea7&rid=giphy.gif\",\"category\":\"sports\"}]";
 	
 	private List<Favorite> dummyFavorites() {
-		List<Favorite> dummyFavorites = Collections.emptyList();
-		try {
-			dummyFavorites = mapper.readValue(DUMMY_FAVS_JSON, new TypeReference<List<Favorite>>(){});
-			System.out.println("deparsed JSON: "+dummyFavorites);
-		}
-		catch (Exception e) {
-			System.out.println("error deparsing JSON");
-		}
+		List<Favorite> dummyFavorites = Collections.singletonList(dummyFavorite);
 		return dummyFavorites;
 	}
 
 	@ModelAttribute("categoryValues")
 	public String[] getMultiCheckboxAllValues() {
-		return new String[] {"-select category-", "Sports", "Entertainment", "Political", "Health", "Home"};
+		return new String[] {"-select category-", "Humor", "Sports", "Entertainment", "Political", "Health", "Home"};
 	}
 
 //	@RequestMapping("/db")
@@ -207,6 +213,25 @@ public class Main {
 //		}
 //	}
 
+	/*
+	 * http://clouddatafacts.com/heroku/heroku-spring-boot-psql/spring_boot_psql_short.html#show-users
+	 * 
+	 CREATE TABLE giphyuser
+	 (
+     id SERIAL PRIMARY KEY NOT NULL,
+     first varchar(100),
+     last varchar (100),
+     email varchar (100) NOT NULL,
+     password varchar (32) NOT NULL,
+     company varchar (150),
+     city varchar(100),
+     favorites varchar (1000)
+	);
+	
+	insert into giphyuser(first, last, email, password, company, city) values ('doug', 'baron', 'dbaronster@gmail.com', '******', 'dnb', 'austin');
+	
+	ALTER TABLE giphyuser ADD COLUMN password varchar (32);
+	 */
 	static private Object parseJson(JsonNode json, String path) {
 		Configuration configuration = Configuration.builder().build();
 

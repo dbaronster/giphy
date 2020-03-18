@@ -10,11 +10,6 @@
 </div>
 <div class="container">
   <h1>Giphy Search Results</h1>
-  <div th:each="url : ${results}">
-  	<img th:src=${url}></img>
-  		  <div class="container">
-	
-		<h3>Pick ${url}</h3>
 	    <form action="#" th:action="@{/add}" th:object="${favorite}" method="post">
 	        <select th:field="*{category}">
 			    <option 
@@ -22,14 +17,14 @@
 			      th:value="${dropdownValue}"
 			      th:text="${dropdownValue}" >
 			    </option>
-			</select>	        
-	        <input type="text" th:field="*{url}" th:value="${#url}" />
-	        <input type="hidden" th:field="*{url}" th:value="${#url}" />
+			</select>
 	        <input type="submit" value="Add Favorite" />
+			<div th:each="url : ${results}">
+			  	<img th:src=${url}></img>
+                <input type="radio" th:field="*{url}" th:value="${url}" />
+            </div>
 	    </form>
-	    
 	  </div>
-  	
   </div>
 </div>
 
