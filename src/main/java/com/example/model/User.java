@@ -15,19 +15,19 @@ import javax.persistence.Table;
 import javax.persistence.UniqueConstraint;
 
 @Entity
-@Table(uniqueConstraints = @UniqueConstraint(columnNames = "email"))
+@Table(name="giphyuser", uniqueConstraints = @UniqueConstraint(columnNames = "email"))
 public class User {
 
 	@Id
 	@GeneratedValue(strategy = GenerationType.AUTO)
 	private Long id;
 	
-	private String firstName;
-	private String lastName;
+	private String first;
+	private String last;
 	private String email;
 	private String password;
-	private String favorites;
-	
+    private String favorites;
+
 	@ManyToMany(fetch = FetchType.EAGER, cascade = CascadeType.ALL)
 	@JoinTable(
 			name = "users_roles",
@@ -41,16 +41,16 @@ public class User {
 		
 	}
 
-	public User(String firstName, String lastName, String email, String password) {
-		this.firstName = firstName;
-		this.lastName = lastName;
+	public User(String first, String last, String email, String password) {
+		this.first = first;
+		this.last = last;
 		this.email = email;
 		this.password = password;
 	}
 
-	public User(String firstName, String lastName, String email, String password, Collection<Role> roles) {
-		this.firstName = firstName;
-		this.lastName = lastName;
+	public User(String first, String last, String email, String password, Collection<Role> roles) {
+		this.first = first;
+		this.last = last;
 		this.email = email;
 		this.password = password;
 		this.roles = roles;
@@ -64,20 +64,20 @@ public class User {
 		this.id = id;
 	}
 
-	public String getFirstName() {
-		return firstName;
+	public String getFirst() {
+		return first;
 	}
 
-	public void setFirstName(String firstName) {
-		this.firstName = firstName;
+	public void setFirst(String first) {
+		this.first = first;
 	}
 
-	public String getLastName() {
-		return lastName;
+	public String getLast() {
+		return last;
 	}
 
-	public void setLastName(String lastName) {
-		this.lastName = lastName;
+	public void setLast(String last) {
+		this.last = last;
 	}
 
 	public String getEmail() {
@@ -116,11 +116,10 @@ public class User {
 	public String toString() {
         return "User{" +
                 "id=" + id +
-                ", firstName='" + firstName + '\'' +
-                ", lastName='" + lastName + '\'' +
+                ", first='" + first + '\'' +
+                ", last='" + last + '\'' +
                 ", email='" + email + '\'' +
                 ", password='" + "*********" + '\'' +
-                ", favorites='" + favorites + '\'' +
                 ", roles=" + roles +
                 '}';
 	}

@@ -26,8 +26,9 @@ public class UserRegistrationDto {
 	@Email
 	@NotEmpty
 	private String confirmEmail;
-	@AssertTrue
-	private Boolean terms;
+	private String company;
+//	@AssertTrue
+//	private Boolean terms;
 	
 	public String getFirstName() {
 		return firstName;
@@ -65,12 +66,18 @@ public class UserRegistrationDto {
 	public void setConfirmEmail(String confirmEmail) {
 		this.confirmEmail = confirmEmail;
 	}
-	public Boolean getTerms() {
-		return terms;
+//	public Boolean getTerms() {
+//		return terms;
+//	}
+//	public void setTerms(Boolean terms) {
+//		this.terms = terms;
+//	}
+//	
+	public String getCompany() {
+		return company;
 	}
-	public void setTerms(Boolean terms) {
-		this.terms = terms;
+	public void setCompany(String company) {
+		this.company = company;
 	}
-	
 	
 }

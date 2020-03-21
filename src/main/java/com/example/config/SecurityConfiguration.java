@@ -23,7 +23,7 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
 		http
 		.authorizeRequests()
 		.antMatchers(
-				"/registration**",
+				"/regist**",
 				"/js/**",
 				"/css/**",
 				"/img/**",
@@ -60,17 +60,17 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
 		return auth;
 	}
 
-    @Override
-    protected void configure(AuthenticationManagerBuilder auth) throws Exception {
-		System.out.println("configure");
-        auth.inMemoryAuthentication()
-                .withUser("user").password(passwordEncoder().encode("password")).roles("USER")
-            .and()
-                .withUser("manager").password(passwordEncoder().encode("password")).roles("MANAGER");
-    }
+//    @Override
+//    protected void configure(AuthenticationManagerBuilder auth) throws Exception {
+//		System.out.println("configure");
+//        auth.inMemoryAuthentication()
+//                .withUser("user").password(passwordEncoder().encode("password")).roles("USER")
+//            .and()
+//                .withUser("manager").password(passwordEncoder().encode("password")).roles("MANAGER");
+//    }
 
-//	@Override
-//	protected void configure(AuthenticationManagerBuilder auth) throws Exception {
-//		auth.authenticationProvider(authenticationProvider());
-//	}
+	@Override
+	protected void configure(AuthenticationManagerBuilder auth) throws Exception {
+		auth.authenticationProvider(authenticationProvider());
+	}
 }

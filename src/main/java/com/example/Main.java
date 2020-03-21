@@ -47,8 +47,11 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestAttribute;
 import org.springframework.web.bind.annotation.RequestMapping;
 
+import com.example.dto.UserRegistrationDto;
 import com.example.model.Favorite;
+import com.example.model.User;
 import com.example.service.GiphyService;
+import com.example.service.UserService;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -74,6 +77,9 @@ public class Main {
 	@Autowired
 	private GiphyService giphyService;
 
+	@Autowired
+	private UserService userService;
+
 	public static void main(String[] args) throws Exception {
 		SpringApplication.run(Main.class, args);
 	}
@@ -90,17 +96,31 @@ public class Main {
 
 	@GetMapping("/login")
 	String login(Model model) {
+        model.addAttribute("user", new User());
 		log.debug("in login");
 		return "login";
 	}
-
 
     // Login form with error  
     @RequestMapping("/login-error")  
     public String loginError(Model model) {  
         model.addAttribute("loginError", true);  
         return "login";  
-    }  
+    }
+
+    @RequestMapping("/registration")
+    public String createUserForm(Model model) {
+		log.debug("in registration");
+        model.addAttribute("user", new UserRegistrationDto());
+        return "createuser";
+    }
+
+    @PostMapping("/register")
+	String register(@ModelAttribute UserRegistrationDto user, Model model) {
+		log.debug("in register");
+		userService.save(user);
+		return "login";
+	}
 
     @PostMapping(value="/loginSecure")
     public String login(@RequestAttribute("username") String userName, @RequestAttribute("password")  String password) {
@@ -186,7 +206,7 @@ public class Main {
 //		try (Connection connection = dataSource.getConnection()) {
 //			Statement stmt = connection.createStatement();
 //			stmt.executeUpdate("CREATE TABLE IF NOT EXISTS ticks (tick timestamp)");
-//			stmt.executeUpdate("INSERT INTO ticks VALUES (now())");
+//			stmt.executeUpdate("INSERT INTO ticks VAL\\\ UES (now())");
 //			ResultSet rs = stmt.executeQuery("SELECT tick FROM ticks");
 //
 //			ArrayList<String> output = new ArrayList<String>();
@@ -228,6 +248,18 @@ public class Main {
      favorites varchar (1000)
 	);
 	
+	CREATE TABLE users_roles
+	(
+	user_id SERIAL NOT NULL,
+	role_id SERIAL NOT NULL
+	);
+	
+	CREATE TABLE role
+	 (
+     id SERIAL PRIMARY KEY NOT NULL,
+     name varchar(100)
+     );
+     
 	insert into giphyuser(first, last, email, password, company, city) values ('doug', 'baron', 'dbaronster@gmail.com', '******', 'dnb', 'austin');
 	
 	ALTER TABLE giphyuser ADD COLUMN password varchar (32);
