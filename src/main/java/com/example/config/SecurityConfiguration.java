@@ -33,9 +33,7 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
 		.formLogin()
 			.loginPage("/login")
             .failureUrl("/login-error")  
-            //.loginProcessingUrl("/loginSecure")
             .defaultSuccessUrl("/index", true)
-           // .usernameParameter("username").passwordParameter("password")
 			.permitAll()
 		.and()
 		.logout()
@@ -59,15 +57,6 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
 		auth.setPasswordEncoder(passwordEncoder());
 		return auth;
 	}
-
-//    @Override
-//    protected void configure(AuthenticationManagerBuilder auth) throws Exception {
-//		System.out.println("configure");
-//        auth.inMemoryAuthentication()
-//                .withUser("user").password(passwordEncoder().encode("password")).roles("USER")
-//            .and()
-//                .withUser("manager").password(passwordEncoder().encode("password")).roles("MANAGER");
-//    }
 
 	@Override
 	protected void configure(AuthenticationManagerBuilder auth) throws Exception {

@@ -32,7 +32,7 @@ public class UserServiceImpl implements UserService {
 	}
 
 	@Override
-	public User save(UserRegistrationDto registration) {
+	public User create(UserRegistrationDto registration) {
 		User user = new User();
 		user.setFirst(registration.getFirstName());
 		user.setLast(registration.getLastName());
@@ -40,6 +40,11 @@ public class UserServiceImpl implements UserService {
 		user.setPassword(passwordEncoder.encode(registration.getPassword()));
 		System.out.println("pw:"+user.getPassword()+"("+user.getPassword().length()+")");
 		user.setRoles(Arrays.asList(new Role("ROLE_USER")));
+		return userRepository.save(user);
+	}
+	
+	@Override
+	public User save(User user) {
 		return userRepository.save(user);
 	}
 	
